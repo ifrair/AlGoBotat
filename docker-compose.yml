@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  # API Gateway (Nginx)
+#  gateway:
+
+  # Сервис аутентификации
+#  auth_service:
+#    build: ./services/auth_service
+#    environment:
+#      DATABASE_URL: ###
+#    depends_on:
+#      - auth_db
+
+  # База данных для auth_service
+#  auth_db:
+
+  # Сервис пользователей
+#  user_service:
+
+  # Сервис курсов
+#  course_service:
+
+  # Сервис контента
+#  content_service:
+
+  # Сервис посылок
+#  submission_service:
+
+#volumes:
