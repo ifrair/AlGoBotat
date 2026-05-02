@@ -6,6 +6,7 @@
 Даем возможность управлять админу
 
 # Ручки
+
 ### get /user/{id}
 get user by id for admin
 
