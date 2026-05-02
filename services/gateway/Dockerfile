@@ -1,15 +1,16 @@
-FROM python:3.13-slim
+FROM nginx:1.25-alpine-slim
 
-WORKDIR /usr/src/app
+RUN apk add --no-cache nginx-mod-http-js
 
-COPY requirements.txt /usr/src/app/
-RUN pip install --no-cache-dir --root-user-action=ignore -r requirements.txt
+RUN rm /etc/nginx/conf.d/default.conf
 
-RUN apt update
-RUN apt install build-essential -y
+COPY nginx.conf /etc/nginx/nginx.conf
 
-COPY . /usr/src/app
+COPY njs/jwt.js /etc/nginx/njs/jwt.js
 
-RUN python setup.py build_ext --inplace
+EXPOSE 80
 
-ENTRYPOINT ["python", "main.py"]
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+    CMD wget --no-verbose --tries=1 --spider http://localhost:80/health || exit 1
+
+CMD ["nginx", "-g", "daemon off;"]

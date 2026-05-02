@@ -13,11 +13,11 @@
 4) Обмениваем яндекс токен на информацию о пользователе.
 5) По email ищем user_id.
 6) Если заданного пользователя не существует, создаем его.
-7) Возвращаем id найденного пользователя.
+7) Возваращет id найденного пользователя.
 
 # Ручки
 
-### post /internal/v1/login - returns user_id based on yandex code
+### post /login - returns user_id based on yandex code
 `{ 
       "code": "code"
 }`

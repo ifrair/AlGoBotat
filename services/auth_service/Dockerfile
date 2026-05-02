@@ -1,15 +1,28 @@
-FROM python:3.13-slim
+# ============================================================
+# Auth Service — Python FastAPI
+# ============================================================
+FROM python:3.11-slim
 
-WORKDIR /usr/src/app
+WORKDIR /app
 
-COPY requirements.txt /usr/src/app/
-RUN pip install --no-cache-dir --root-user-action=ignore -r requirements.txt
+# Install system dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    gcc \
+    && rm -rf /var/lib/apt/lists/*
 
-RUN apt update
-RUN apt install build-essential -y
+# Copy requirements first for better caching
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
 
-COPY . /usr/src/app
+# Copy application code
+COPY . .
 
-RUN python setup.py build_ext --inplace
+# Expose port
+EXPOSE 8000
 
-ENTRYPOINT ["python", "main.py"]
+# Health check
+HEALTHCHECK --interval=30s --timeout=3s --start-period=10s --retries=3 \
+    CMD python -c "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')" || exit 1
+
+# Run with uvicorn
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
