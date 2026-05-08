@@ -5,51 +5,78 @@
 
 # Ручки
 
-### post /course  - создать курс 
+Возвращает список видео for autors only
+### post /api/v1/course  - создать курс 
 `{
     parent_course_id: uuid
     content:
-    [
-        loaded_video_id,
-        loaded_text_id,
-        loaded_video_id,
-        loaded_task_id,
-    ]
+    {
+        item_id: 
+        {
+            type: video|text|task
+            id: uuid
+        },
+        item_id: 
+        {
+            type: video|text|task
+            id: uuid
+        },
+        item_id: 
+        {
+            type: video|text|task
+            id: uuid
+        },
+    }
 }`
 return id
 
-### delete /course/{id}
+### put /internal/update/course/{course_id}/item/{item_id}  - создать айтем курса
+`{
+    parent_course_id: uuid
+    id: uuid
+    type: video|text|task 
+}`
+
+
+### delete /api/v1/course/{id}
 delete course by id
 
-### get /course/{id}
+### get /api/v1/course/{id}
 Подумать, возможно стоит сразу возвращать агрегат.
 return custom course by id
 `{
     parent_course_id: uuid
     author: uuid
     content:
-    [
-        loaded_video_id,
-        loaded_text_id,
-        loaded_video_id,
-        loaded_task_id,
-    ]
+    {
+        item_id: 
+        {
+            type: video|text|task
+            id: uuid
+        },
+        item_id: 
+        {
+            type: video|text|task
+            id: uuid
+        },
+        item_id: 
+        {
+            type: video|text|task
+            id: uuid
+        },
+    }
     child_course_ids:[
         uud1,
         uud2...
     ]
 }`
 
-### get /courses - retrun list of courses by filter
+### get /api/v1/courses - retrun list of courses by filter
 params:
     active: [True, False]. False for admin users only
-    page: Page
 
-### post /course/{id}/activate
+### post /api/v1/admin/course/{id}/activate
 Activate course - admin only
 
-### post /couse/{id}/deactivate
-Deactivate course - admin only
-
-### post /couse/{id}/complete/{item_id}
+### post /api/v1/admin/course/{id}/deactivate
 Deactivate course - admin only

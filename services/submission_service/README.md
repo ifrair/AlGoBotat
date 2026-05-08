@@ -8,37 +8,44 @@
 
 # Ручки
 
-### post /submit
+### post /api/v1/submit
 `{
     content: text
     language: js, java, python, c, c++, c#, go, typescipt, ruby, rust 
-    task_id: uuid
+    item_id: uuid
+    course_assigment_id: uuid
+
 }`
 
 
-### get /submit/{id}
+### get /api/v1/submit/{id}
 get submition by id
 `{
     verdict: "OK"
     logs: text
+    status: processing | completed
     time: 50 #ms 
     memory: 128
     language: js, java, python, c, c++, c#, go, typescipt, ruby, rust 
     content: text
-    task_id: uuid
+    item_id: uuid
+    course_assigment_id: uuid
+    created_date: date
+    updated_date
 }`
 
 
 
-### get /submits
+
+
+### get /api/v1/submits
     params: 
-        page
-        task_id
+        * task_id
     description:
         for a user return his submissions 
-        for admins returns all submissions
 
-### delete /submit/{id}
-    remove submit
-    for admins user only
-
+### get /api/v1/admin/submits
+    params: 
+        * task_id
+    description:
+        for user returns all submissions

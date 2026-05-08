@@ -17,7 +17,7 @@
 
 # Ручки
 
-### post /login - returns user_id based on yandex code
+### post /internal/v1/login - returns user_id based on yandex code
 `{ 
       "code": "code"
 }`
