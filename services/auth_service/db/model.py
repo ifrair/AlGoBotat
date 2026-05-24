@@ -3,7 +3,6 @@ from typing import TYPE_CHECKING
 
 from sqlalchemy import Column, func, ForeignKey, String, TIMESTAMP, Boolean, BigInteger, ARRAY
 from sqlalchemy.orm import declarative_base, relationship
-from sqlalchemy.dialects.postgresql import UUID, ARRAY
 
 if TYPE_CHECKING:
     pass
@@ -16,7 +15,7 @@ Base = declarative_base()
 
 class UUIDMixin:
     id = Column(
-        UUID(as_uuid=True),
+        uuid.UUID(as_uuid=True),
         primary_key=True,
         default=uuid.uuid4,
         server_default=func.gen_random_uuid(),
@@ -45,8 +44,6 @@ class DBUser(UUIDMixin, Base):
     is_banned=Column(Boolean, server_default='False')
     is_test_user=Column(Boolean, server_default='False')
     email = Column(String(64))
-    role = Column(String(16), server_default='USER')
-    photo_url=Column(String(64), nullable=True)
 
 
 class DBUserYandexSSO( Base):
@@ -54,7 +51,7 @@ class DBUserYandexSSO( Base):
 
     __tablename__ = "user_yandex_sso"
 
-    user_id = Column(UUID(as_uuid=True), ForeignKey("user.id", ondelete="CASCADE"))
+    user_id = Column(uuid.UUID(as_uuid=True), ForeignKey("users.id", ondelete="CASCADE"))
     yandex_id = Column(BigInteger, primary_key=True)
     default_email = Column(String(64), nullable=False)
 

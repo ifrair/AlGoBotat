@@ -2,13 +2,13 @@ import logging
 
 from sqlalchemy import UUID, String, select
 
-from db.engineer import DbEngine
-from db.model import DBUser, DBUserYandexSSO
-from service.model import User
+from services.auth_service.db.engineer import DbEngine
+from services.auth_service.db.model import DBUser, DBUserYandexSSO
+from services.auth_service.service.model import User
 
 from loguru import logger
 
-from service.schemes import UserYandex
+from services.auth_service.service.schemes import UserYanex
 
 
 class UserRepo:
@@ -42,7 +42,7 @@ class UserRepo:
 
     def save_user_profile_from_yandex(
             self,
-            yandex_sso: UserYandex,
+            yandex_sso: UserYanex,
             is_test_user: bool = False,
     ) -> UUID:
         logger.debug(
@@ -76,11 +76,11 @@ class UserRepo:
                 "Information from Yandex SSO %s has saved in db.", yandex_sso
             )
 
-            return user.id
+        return user.id
 
     def update_user_profile_from_yandex(
             self,
-            yandex_sso: UserYandex,
+            yandex_sso: UserYanex,
             user_id: UUID,
             is_test_user: bool = False,
     ) -> UUID | None:

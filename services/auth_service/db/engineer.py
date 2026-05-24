@@ -25,7 +25,7 @@ class DbEngine:
         )
 
         self.SessionLocal = scoped_session(
-            sessionmaker(autoflush=False, bind=self.engine, expire_on_commit=False)
+            sessionmaker(autoflush=False, bind=self.engine)
         )
 
     @contextmanager
