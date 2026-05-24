@@ -5,8 +5,8 @@ import dotenv
 import requests
 from requests import Response
 
-from services.auth_service.service.exceptions import YandexDataError
-from services.auth_service.service.schemes import UserYanex
+from service.exceptions import YandexDataError
+from service.schemes import UserYandex
 
 dotenv.load_dotenv()
 
@@ -26,21 +26,23 @@ class YandexSSOService:
                 "code": code,
                 "client_id": self.client_id,
                 "client_secret": self.client_secret,
-            }
+            },
         )
 
         if response.status_code != HTTPStatus.OK:
-            raise YandexDataError(f"Cannot exchange yandex code for yandex token:\n{response.json()}")
+            raise YandexDataError(
+                f"Cannot exchange yandex code for yandex token:\n{response.json()}, {code}"
+            )
 
         access_token = response.json().get("access_token")
 
         return access_token
 
-    def fetch_user_data(self, code: str) -> UserYanex:
+    def fetch_user_data(self, code: str) -> UserYandex:
         token = self._exchange_code_for_token(code=code)
         response = self._exchange_token_for_data(token)
 
-        return UserYanex.model_validate(response.json())
+        return UserYandex.model_validate(response.json())
 
     def _exchange_token_for_data(self, token: str) -> Response:
         headers = {"Authorization": f"OAuth {token}"}
@@ -49,6 +51,8 @@ class YandexSSOService:
         )
 
         if response.status_code != HTTPStatus.OK:
-            raise YandexDataError(f"Cannot exchange yandex token for yandex data:\n{response.json()}")
+            raise YandexDataError(
+                f"Cannot exchange yandex token for yandex data:\n{response.json()}"
+            )
 
         return response

@@ -10,6 +10,7 @@ load_dotenv()
 
 from loguru import logger
 
+
 class DbEngine:
     """Настройки базы данных и подключения к ней."""
 
@@ -35,9 +36,7 @@ class DbEngine:
             yield session
             session.commit()
         except Exception as e:
-            logger.exception(
-                "Can't accomplish transaction. Rollback...", exc_info=e
-            )
+            logger.exception("Can't accomplish transaction. Rollback...", exc_info=e)
             session.rollback()
             raise
         finally:

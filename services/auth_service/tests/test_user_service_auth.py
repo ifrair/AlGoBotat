@@ -5,18 +5,17 @@ import responses
 
 from service.schemes import UserYandex
 from service.schemes import LoginData, AuthType
-from service.user_service import UserService
+from service.auth_service import UserService
 
 
 class TestAuthService:
-
     @pytest.mark.positive
     @responses.activate
     def test_login(
         self,
         user_service: UserService,
         mocker,
-            user_yandex: UserYandex,
+        user_yandex: UserYandex,
         token_url,
         yandex_login_url,
     ):
@@ -36,12 +35,9 @@ class TestAuthService:
             status=200,
         )
 
-        spy = mocker.spy(
-             obj=user_service.yandex_sso_service, name="fetch_user_data"
-        )
+        spy = mocker.spy(obj=user_service.yandex_sso_service, name="fetch_user_data")
 
         jwt_token = user_service.login(sso_data=login_data)
 
         assert jwt_token
         assert spy.call_count == 1
-

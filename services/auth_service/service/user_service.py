@@ -1,52 +1,51 @@
 import dataclasses
+import os
+from datetime import datetime
+from typing import override
 from uuid import UUID
 
 from loguru import logger
-from sqlalchemy import select
 
-from services.auth_service.db.model import DBUser, DBUserYandexSSO
-from services.auth_service.db.user_repo import UserRepo
-from services.auth_service.service.model import User
-from services.auth_service.service.schemes import UserYanex
-from services.auth_service.service.yandex_sso_service import YandexSSOService
+from service.exceptions import YandexDataError
+from service.interfaces.user_service_i import UserServiceI
+from service.yandex_sso_service import YandexSSOService
+from services.commons.constants import UserRole
+from service.jwt_service import JwtService
+from service.model import User, JWTUser
+from service.schemes import LoginData, UserYandex
 
 
 @dataclasses.dataclass
-class UserService:
-    user_repo: UserRepo = UserRepo()
-    yandex_sso_service= YandexSSOService()
+class UserServiceMock(UserServiceI):
+    jwt_service = JwtService()
+    user_service_url = os.getenv("USER_SERVICE_URL", "http://user_service/api/v1")
 
-    def get_user_by_email(self, email: str):
-        return self._to_dao_user(user=self.user_repo.get_user_by_email(email=email))
+    def update_user_profile_from_yandex(self, yandex_sso: UserYandex, user_id: UUID):
+        pass
 
-    def get_user_by_yandex_id(self, email: str):
-        return self._to_dao_user(user=self.user_repo.get_user_by_yandex_id(email=email))
+    @override
+    def get_user_by_yandex_sso(self, yandex_id: int):
+        return self._get_mock_user(yandex_id=str(yandex_id))
 
-    def get_user_by_id(self, user_id: UUID):
-        return self._to_dao_user(user=self.user_repo.get_user_by_id(user_id=user_id))
+    @override
+    def save_user_profile_from_yandex(self, yandex_sso: UserYandex, is_test_user: bool):
+        return self._get_mock_user(
+            email=yandex_sso.default_email, yandex_id=str(yandex_sso.id)
+        )
 
+    def _get_user_by_yandex_id(self, yandex_id: str):
+        return self._get_mock_user(yandex_id=yandex_id)
 
     @staticmethod
-    def _to_dao_user(user: DBUser)-> User:
-        return User(id=user.id, username=user.username, first_name=user.first_name, last_name=user.last_name, bio=user.bio, email=user.email, is_test_user=user.is_test_user, is_banned=user.is_banned, created_at=user.created_at, updated_at=user.updated_at)
-
-
-    def save_user_or_get_profile_from_yandex(
-            self, code: str, is_test_user: bool = False
-    ) -> DBUser:
-        yandex_sso = self.yandex_sso_service.fetch_user_data(code=code)
-        user = self.user_repo.get_user_by_yandex_sso(yandex_id=code)
-
-        if user is None:
-            user_id = self.user_repo.save_user_profile_from_yandex(
-                yandex_sso=yandex_sso, is_test_user=is_test_user
-            )
-            user = self.user_repo.get_user_by_id(user_id=user_id)
-
-        else:
-            self.user_repo.update_user_profile_from_yandex(
-                yandex_sso=yandex_sso, user_id=user.id
-            )
-            user = self.user_repo.get_user_by_id(user_id=user.id)
-
-        return user
+    def _get_mock_user(**kwargs) -> User:
+        return User.model_validate(
+            {
+                "yandex_id": "123234345",
+                "created_at": datetime.now(),
+                "updated_at": datetime.now(),
+                "id": UUID("810948d3-ecc7-4cf0-af20-6649c136abe3"),
+                "email": "admin@aibotat.com",
+                "role": UserRole.USER,
+            }
+            | kwargs
+        )

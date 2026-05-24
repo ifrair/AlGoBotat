@@ -1,8 +1,10 @@
 from enum import StrEnum
 
 from pydantic import BaseModel, EmailStr
+import email_validator
 
-class UserYanex(BaseModel):
+
+class UserYandex(BaseModel):
     id: int
     login: str
     default_email: EmailStr
@@ -33,4 +35,4 @@ class AuthType(StrEnum):
 
 class LoginData(BaseModel):
     auth_type: AuthType
-    data:  str
+    data: str
