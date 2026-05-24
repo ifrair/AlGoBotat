@@ -1,19 +1,17 @@
 from __future__ import annotations
 
-import dataclasses
-from datetime import date, datetime, timedelta
-from enum import StrEnum, auto
-from typing import Callable
+from datetime import datetime
 from uuid import UUID
 
 from pydantic import BaseModel
 
 
-class Base(BaseModel):
-    pass
+class JWTUser(BaseModel):
+    user_id: str
+    role: str
 
 
-class User(Base):
+class User(BaseModel):
     id: UUID | str | None
     username: str | None
     first_name: str | None
