@@ -1,30 +1,133 @@
 version: '3.8'
 
 services:
-  # API Gateway (Nginx)
-#  gateway:
+  # API Gateway (Nginx + njs JWT verification)
+  gateway:
+    build: ./services/gateway
+    ports:
+      - "80:80"
+    environment:
+      JWT_SECRET: ${JWT_SECRET}
+      ADMIN_LOGIN: ${ADMIN_LOGIN:-admin}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:-password}
+    depends_on:
+      - auth_service
+      - user_service
+      - course_service
+      - content_service
+      - submission_service
+    networks:
+      - algobotat_network
 
   # Сервис аутентификации
-#  auth_service:
-#    build: ./services/auth_service
-#    environment:
-#      DATABASE_URL: ###
-#    depends_on:
-#      - auth_db
-
-  # База данных для auth_service
-#  auth_db:
+  auth_service:
+    build: ./services/auth_service
+    environment:
+      DATABASE_URL: postgresql+asyncpg://user_user:user_pass@user_db:5432/user_db
+      JWT_SECRET: ${JWT_SECRET}
+      JWT_ALGORITHM: HS256
+      JWT_ACCESS_TOKEN_EXPIRE_MINUTES: 30
+      YANDEX_CLIENT_ID: ${YANDEX_CLIENT_ID}
+      YANDEX_CLIENT_SECRET: ${YANDEX_CLIENT_SECRET}
+    depends_on:
+      - user_db
+    networks:
+      - algobotat_network
 
   # Сервис пользователей
-#  user_service:
+  user_service:
+    build: ./services/user_service
+    environment:
+      DATABASE_URL: postgresql+asyncpg://user_user:user_pass@user_db:5432/user_db
+      JWT_SECRET: ${JWT_SECRET}
+    depends_on:
+      - user_db
+    networks:
+      - algobotat_network
+
+  user_db:
+    image: postgres:18.3
+    environment:
+      POSTGRES_USER: user_user
+      POSTGRES_PASSWORD: user_pass
+      POSTGRES_DB: user_db
+    volumes:
+      - user_db_data:/var/lib/postgresql/data
+    networks:
+      - algobotat_network
 
   # Сервис курсов
-#  course_service:
+  course_service:
+    build: ./services/course_service
+    environment:
+      DATABASE_URL: postgresql+asyncpg://course_user:course_pass@course_db:5432/course_db
+      JWT_SECRET: ${JWT_SECRET}
+    depends_on:
+      - course_db
+    networks:
+      - algobotat_network
+
+  course_db:
+    image: postgres:18.3
+    environment:
+      POSTGRES_USER: course_user
+      POSTGRES_PASSWORD: course_pass
+      POSTGRES_DB: course_db
+    volumes:
+      - course_db_data:/var/lib/postgresql/data
+    networks:
+      - algobotat_network
 
   # Сервис контента
-#  content_service:
+  content_service:
+    build: ./services/content_service
+    environment:
+      DATABASE_URL: postgresql+asyncpg://content_user:content_pass@content_db:5432/content_db
+      JWT_SECRET: ${JWT_SECRET}
+    depends_on:
+      - content_db
+    networks:
+      - algobotat_network
+
+  content_db:
+    image: postgres:18.3
+    environment:
+      POSTGRES_USER: content_user
+      POSTGRES_PASSWORD: content_pass
+      POSTGRES_DB: content_db
+    volumes:
+      - content_db_data:/var/lib/postgresql/data
+    networks:
+      - algobotat_network
 
   # Сервис посылок
-#  submission_service:
+  submission_service:
+    build: ./services/submission_service
+    environment:
+      DATABASE_URL: postgresql+asyncpg://submission_user:submission_pass@submission_db:5432/submission_db
+      JWT_SECRET: ${JWT_SECRET}
+    depends_on:
+      - submission_db
+    networks:
+      - algobotat_network
 
-#volumes:
+  submission_db:
+    image: postgres:18.3
+    environment:
+      POSTGRES_USER: submission_user
+      POSTGRES_PASSWORD: submission_pass
+      POSTGRES_DB: submission_db
+    volumes:
+      - submission_db_data:/var/lib/postgresql/data
+    networks:
+      - algobotat_network
+
+networks:
+  algobotat_network:
+    driver: bridge
+
+volumes:
+  user_db_data:
+  course_db_data:
+  content_db_data:
+  submission_db_data:
