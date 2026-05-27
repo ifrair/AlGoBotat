@@ -76,7 +76,7 @@ class UserRepo:
                 "Information from Yandex SSO %s has saved in db.", yandex_sso
             )
 
-        return user.id
+            return user.id
 
     def update_user_profile_from_yandex(
             self,

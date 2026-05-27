@@ -46,6 +46,7 @@ class DBUser(UUIDMixin, Base):
     is_test_user=Column(Boolean, server_default='False')
     email = Column(String(64))
     role = Column(String(16), server_default='USER')
+    photo_url=Column(String(64), nullable=True)
 
 
 class DBUserYandexSSO( Base):
@@ -53,7 +54,7 @@ class DBUserYandexSSO( Base):
 
     __tablename__ = "user_yandex_sso"
 
-    user_id = Column(UUID(as_uuid=True), ForeignKey("users.id", ondelete="CASCADE"))
+    user_id = Column(UUID(as_uuid=True), ForeignKey("user.id", ondelete="CASCADE"))
     yandex_id = Column(BigInteger, primary_key=True)
     default_email = Column(String(64), nullable=False)
 
