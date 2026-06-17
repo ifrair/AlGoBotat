@@ -1,11 +1,9 @@
-import os
-
 import pytest
 import responses
 
-from service.schemes import UserYandex
+from service.interfaces.auth_service_i import AuthServiceI
 from service.schemes import LoginData, AuthType
-from service.auth_service import UserService
+from service.schemes import UserYandex
 
 
 class TestAuthService:
@@ -13,7 +11,7 @@ class TestAuthService:
     @responses.activate
     def test_login(
         self,
-        user_service: UserService,
+        auth_service: AuthServiceI,
         mocker,
         user_yandex: UserYandex,
         token_url,
@@ -35,9 +33,9 @@ class TestAuthService:
             status=200,
         )
 
-        spy = mocker.spy(obj=user_service.yandex_sso_service, name="fetch_user_data")
+        spy = mocker.spy(obj=auth_service.yandex_sso_service, name="fetch_user_data")
 
-        jwt_token = user_service.login(sso_data=login_data)
+        jwt_token = auth_service.login(sso_data=login_data)
 
         assert jwt_token
         assert spy.call_count == 1

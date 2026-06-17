@@ -2,15 +2,15 @@ import os
 
 import pytest
 
-from service.interfaces.auth_service_i import UserService
+from service.auth_service import AuthService
+from service.interfaces.auth_service_i import AuthServiceI
 from service.schemes import UserYandex
 from service.yandex_sso_service import YandexSSOService
-from services.user_service.db.user_repo import UserRepo
 
 
 @pytest.fixture(scope="session")
-def user_service(user_repo: UserRepo) -> UserService:
-    return UserService()
+def auth_service() -> AuthServiceI:
+    return AuthService()
 
 
 @pytest.fixture(scope="session")

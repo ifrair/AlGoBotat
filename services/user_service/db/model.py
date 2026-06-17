@@ -9,10 +9,9 @@ from sqlalchemy import (
     TIMESTAMP,
     Boolean,
     BigInteger,
-    ARRAY,
 )
-from sqlalchemy.orm import declarative_base, relationship
 from sqlalchemy.dialects.postgresql import UUID, ARRAY
+from sqlalchemy.orm import declarative_base, relationship
 
 if TYPE_CHECKING:
     pass

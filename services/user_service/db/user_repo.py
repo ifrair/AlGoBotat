@@ -1,11 +1,9 @@
+from loguru import logger
 from sqlalchemy import UUID, select
 
+from service.schemes import UserYandex
 from services.user_service.db.engineer import DbEngine
 from services.user_service.db.model import DBUser, DBUserYandexSSO
-
-from loguru import logger
-
-from service.schemes import UserYandex
 
 
 class UserRepo:

@@ -14,7 +14,7 @@ services:
 #      - content_service
 #      - submission_service
 #    networks:
-#      - algobot_network
+#      - algobotat_network
 #
   # Сервис аутентификации
   auth_service:
@@ -24,17 +24,17 @@ services:
     depends_on:
       - user_db
     networks:
-      - algobot_network
+      - algobotat_network
 
   # Сервис пользователей
-  user_service:
-    build: ./services/user_service
-    container_name: user_service
-    env_file: "./services/user_service/.env"
-    depends_on:
-      - user_db
-    networks:
-      - algobot_network
+#  user_service:
+#    build: ./services/user_service
+#    container_name: user_service
+#    env_file: "./services/user_service/.env"
+#    depends_on:
+#      - user_db
+#    networks:
+#      - algobotat_network
 
   user_db:
     image: postgres:18.3
@@ -45,7 +45,7 @@ services:
     ports: [ '5433:5432' ]
     volumes: [./.pgdata:/var/lib/postgresql/data/pgdata]
     networks:
-      - algobot_network
+      - algobotat_network
 #
 #  # Сервис курсов
 #  course_service:
@@ -54,7 +54,7 @@ services:
 #    depends_on:
 #      - course_db
 #    networks:
-#      - algobot_network
+#      - algobotat_network
 #
 #  course_db:
 #    image: postgres:18.3
@@ -65,7 +65,7 @@ services:
 #    volumes:
 #      - course_db_data:/var/lib/postgresql/data
 #    networks:
-#      - algobot_network
+#      - algobotat_network
 #
 #  # Сервис контента
 #  content_service:
@@ -74,7 +74,7 @@ services:
 #    depends_on:
 #      - content_db
 #    networks:
-#      - algobot_network
+#      - algobotat_network
 #
 #  content_db:
 #    image: postgres:18.3
@@ -85,7 +85,7 @@ services:
 #    volumes:
 #      - content_db_data:/var/lib/postgresql/data
 #    networks:
-#      - algobot_network
+#      - algobotat_network
 #
 #  # Сервис посылок
 #  submission_service:
@@ -94,7 +94,7 @@ services:
 #    depends_on:
 #      - submission_db
 #    networks:
-#      - algobot_network
+#      - algobotat_network
 #
 #  submission_db:
 #    image: postgres:18.3
@@ -105,10 +105,10 @@ services:
 #    volumes:
 #      - submission_db_data:/var/lib/postgresql/data
 #    networks:
-#      - algobot_network
+#      - algobotat_network
 
 networks:
-  algobot_network:
+  algobotat_network:
     driver: bridge
 
 volumes:

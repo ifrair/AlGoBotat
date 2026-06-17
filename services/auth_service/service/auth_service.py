@@ -1,17 +1,15 @@
 import dataclasses
 from dataclasses import field
 from typing import override
-from uuid import UUID
 
 from loguru import logger
-from requests.utils import default_user_agent
 
 from service.interfaces.auth_service_i import AuthServiceI
 from service.interfaces.user_service_i import UserServiceI
-from service.user_service import UserServiceMock
 from service.jwt_service import JwtService
 from service.model import User, JWTUser
 from service.schemes import LoginData
+from service.user_service import UserServiceMock
 from service.yandex_sso_service import YandexSSOService
 
 
@@ -39,18 +37,5 @@ class AuthService(AuthServiceI):
         self, code: str, is_test_user: bool = False
     ) -> User:
         yandex_sso = self.yandex_sso_service.fetch_user_data(code=code)
-        user = self.user_service.get_user_by_yandex_sso(yandex_id=yandex_sso.id)
 
-        if user is None:
-            self.user_service.save_user_profile_from_yandex(
-                yandex_sso=yandex_sso, is_test_user=is_test_user
-            )
-            user = self.user_service.get_user_by_yandex_sso(yandex_id=yandex_sso.id)
-
-        else:
-            self.user_service.update_user_profile_from_yandex(
-                yandex_sso=yandex_sso, user_id=user.id
-            )
-            user = self.user_service.get_user_by_yandex_sso(yandex_id=yandex_sso.id)
-
-        return User
+        return self.user_service.get_or_save_user_by_yandex_sso(yandex_sso=yandex_sso)

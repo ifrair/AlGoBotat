@@ -1,5 +1,6 @@
-from api.app import app  # noqa
 import uvicorn
+
+from api.app import app  # noqa
 
 
 def main():
