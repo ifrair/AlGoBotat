@@ -1,5 +1,5 @@
 # Secrets
-.env.example
+.env
 !.env.example
 
 # Python
@@ -13,3 +13,4 @@ __pycache__/
 
 # Logs
 *.log
+.copilot-specs-cache/

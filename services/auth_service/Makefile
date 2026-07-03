@@ -7,7 +7,7 @@ PYTHON := $(VENV)/bin/python
 PIP := $(VENV)/bin/pip
 
 venv: ## Создать виртуальное окружение
-	python3.12 -m venv $(VENV)
+	python3.13 -m venv $(VENV)
 	$(PIP) install --upgrade pip
 	$(PIP) install -r requirements.txt
 	$(PIP) install pytest pytest-cov httpx

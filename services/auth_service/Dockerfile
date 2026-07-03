@@ -1,25 +1,15 @@
 FROM python:3.13-slim
 
-WORKDIR /app
+WORKDIR /usr/src/app
 
-# Install system dependencies
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    gcc \
-    && rm -rf /var/lib/apt/lists/*
+COPY requirements.txt /usr/src/app/
+RUN pip install --no-cache-dir --root-user-action=ignore -r requirements.txt
 
-# Copy requirements first for better caching
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+RUN apt update
+RUN apt install build-essential -y
 
-# Copy application code
-COPY . .
+COPY . /usr/src/app
 
-# Expose port
-EXPOSE 8000
+RUN python setup.py build_ext --inplace
 
-# Health check
-HEALTHCHECK --interval=30s --timeout=3s --start-period=10s --retries=3 \
-    CMD python -c "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')" || exit 1
-
-# Run with uvicorn
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
+ENTRYPOINT ["python", "main.py"]
