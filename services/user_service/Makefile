@@ -19,7 +19,7 @@ run: ## Запустить сервис локально (не в Docker)
 	$(PYTHON) -m uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 
 migrate: ## Применить миграции Alembic
-	$(PYTHON) -m alembic upgrade head
+	$(PYTHON) -m alembic upgrade heads
 
 migrate-down: ## Откатить последнюю миграцию
 	$(PYTHON) -m alembic downgrade -1
@@ -68,10 +68,9 @@ docker-logs: ## Показать логи контейнера
 
 docker-test: ## Запустить тесты ВНУТРИ контейнера (после сборки)
 	@echo "🧪 Запуск тестов внутри контейнера..."
-	docker run --rm \
-		--name $(DOCKER_CONTAINER)-test \
-		--env-file .env.test \
-		$(DOCKER_IMAGE) \
-		pytest tests/ -v
+    docker run --entrypoint pytest
+    --network algobotat_remote_algobotat_network
+    --env DB_CONNECTION=postgresql://user_user:user_pass@user_db:5432/user_db
+    -it $(docker build -q .)
 
 docker-build-test: docker-build docker-test ## Собрать образ и запустить тесты внутри него

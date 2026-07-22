@@ -5,7 +5,7 @@ from uuid import UUID
 
 from pydantic import BaseModel
 
-from services.commons.constants import UserRole
+from commons.constants import UserRole
 
 
 class JWTUser(BaseModel):
