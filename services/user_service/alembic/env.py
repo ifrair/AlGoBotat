@@ -5,7 +5,7 @@ from alembic import context
 from dotenv import load_dotenv
 from sqlalchemy import engine_from_config, pool
 
-from services.user_service.db.model import Base as DBBase
+from db.model import Base as DBBase
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
@@ -24,7 +24,6 @@ def get_url():
 if config.config_file_name is not None:
     fileConfig(config.config_file_name)
     config = context.config
-    print(get_url())
     config.set_section_option(config.config_ini_section, "sqlalchemy.url", get_url())
 # add your model's MetaData object here
 # for 'autogenerate' support

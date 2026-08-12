@@ -8,7 +8,7 @@ from service.interfaces.user_service_i import UserServiceI
 from service.jwt_service import JwtService
 from service.model import User
 from service.schemes import UserYandex
-from services.commons.constants import UserRole
+from commons.constants import UserRole
 
 
 @dataclasses.dataclass
